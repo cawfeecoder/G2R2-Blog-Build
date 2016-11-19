@@ -24,9 +24,9 @@ func init() {
 	} else {
 		fmt.Println("Successfully connected to the RethinkDB")
 	}
+}
 
-  //GetSession - Gets Current RethinkDB Session
-  func GetSession() *r.Session {
-	  return session
-  }
+//GetSession gets Current RethinkDB Session
+func GetSession() *r.Session {
+	return session
 }
