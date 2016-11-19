@@ -7,10 +7,11 @@ import (
 
 	r "github.com/dancannon/gorethink"
 	"github.com/dchest/uniuri"
-	"github.com/nfrush/Go-MarketPlace/models/jwt"
+	"github.com/dgrijalva/jwt-go"
+	"github.com/nfrush/G2R2-Blog-Build/models/token"
 )
 
-var session = db.GetSession()
+var session = rethink.GetSession()
 
 //signingKey - Signing Key For Cookies
 var signingKey = InitSigningKey()
@@ -39,7 +40,7 @@ func IssueToken(u *modelUser.User) (string, error) {
 		return "", err
 	}
 
-	issuedToken := modelJWT.JWT{Token: tokenString, Issuer: "Frush Development LTD", Audience: u.Name, IssuedAt: time.Now().Unix(), Expires: time.Now().Add(time.Hour * 72).Unix(), JTI: "http://example.com"}
+	issuedToken := modelToken.JWT{Token: tokenString, Issuer: "Frush Development LTD", Audience: u.Name, IssuedAt: time.Now().Unix(), Expires: time.Now().Add(time.Hour * 72).Unix(), JTI: "http://example.com"}
 
 	if err := r.Table("tokens").Insert(issuedToken).Exec(session); err != nil {
 		return "", err
@@ -54,7 +55,7 @@ func RevokeToken(u *modelUser.User) error {
 	if err != nil {
 		return err
 	}
-	var transformToken modelJWT.JWT
+	var transformToken modelToken.JWT
 	result.One(&transformToken)
 	result.Close()
 
@@ -108,7 +109,7 @@ func RequiresAuth(token string) (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		var transformToken modelJWT.JWT
+		var transformToken modelToken.JWT
 		res.One(&transformToken)
 		res.Close()
 
