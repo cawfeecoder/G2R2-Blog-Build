@@ -28,6 +28,6 @@ func init() {
 }
 
 //GetSession gets the current DB session
-func GetSession() {
+func GetSession() *r.Session {
 	return session
 }

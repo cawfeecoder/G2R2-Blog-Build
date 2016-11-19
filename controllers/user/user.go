@@ -5,6 +5,8 @@ import (
 	"regexp"
 
 	"github.com/labstack/echo"
+	"github.com/nfrush/G2R2-Blog-Build/models/user"
+	"github.com/nfrush/G2R2-Blog-Build/services/token"
 )
 
 //CreateUser creates a new user

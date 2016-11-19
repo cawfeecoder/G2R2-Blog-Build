@@ -8,7 +8,9 @@ import (
 	r "github.com/dancannon/gorethink"
 	"github.com/dchest/uniuri"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/nfrush/G2R2-Blog-Build/database/rethink"
 	"github.com/nfrush/G2R2-Blog-Build/models/token"
+	"github.com/nfrush/G2R2-Blog-Build/models/user"
 )
 
 var session = rethink.GetSession()
@@ -28,19 +30,20 @@ func GetSigningKey() string {
 
 //IssueToken - Issue New JWT Token
 func IssueToken(u *modelUser.User) (string, error) {
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims["iss"] = "Frush Development LTD"
-	token.Claims["aud"] = u.Name
-	token.Claims["iat"] = time.Now().Unix()
-	token.Claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	token.Claims["jti"] = "http://example.com"
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": "Frush Development LTD",
+		"aud": u.Username,
+		"iat": time.Now().Unix(),
+		"exp": time.Now().Add(time.Hour * 72).Unix(),
+		"jti": "http://example.com",
+	})
 
 	tokenString, err := token.SignedString([]byte(signingKey))
 	if err != nil {
 		return "", err
 	}
 
-	issuedToken := modelToken.JWT{Token: tokenString, Issuer: "Frush Development LTD", Audience: u.Name, IssuedAt: time.Now().Unix(), Expires: time.Now().Add(time.Hour * 72).Unix(), JTI: "http://example.com"}
+	issuedToken := modelToken.JWT{Token: tokenString, Issuer: "Frush Development LTD", Audience: u.Username, IssuedAt: time.Now().Unix(), Expires: time.Now().Add(time.Hour * 72).Unix(), JTI: "http://example.com"}
 
 	if err := r.Table("tokens").Insert(issuedToken).Exec(session); err != nil {
 		return "", err
@@ -51,7 +54,7 @@ func IssueToken(u *modelUser.User) (string, error) {
 
 //RevokeToken - Revoke the JWT Token
 func RevokeToken(u *modelUser.User) error {
-	result, err := r.Table("tokens").Filter(map[string]interface{}{"Audience": u.Name}).Run(session)
+	result, err := r.Table("tokens").Filter(map[string]interface{}{"Audience": u.Username}).Run(session)
 	if err != nil {
 		return err
 	}
@@ -59,7 +62,7 @@ func RevokeToken(u *modelUser.User) error {
 	result.One(&transformToken)
 	result.Close()
 
-	if err := r.Table("tokens").Filter("Audience: u.Name").Delete().Exec(session); err != nil {
+	if err := r.Table("tokens").Filter("Audience: u.Username").Delete().Exec(session); err != nil {
 		return err
 	}
 
@@ -92,7 +95,7 @@ func TokenExists(token string) (bool, error) {
 
 //TokenExistsUser - Checks if a user has an assigned token
 func TokenExistsUser(u *modelUser.User) (bool, error) {
-	if err := r.Table("tokens").Filter(map[string]interface{}{"Audience": u.Name}).Exec(session); err != nil {
+	if err := r.Table("tokens").Filter(map[string]interface{}{"Audience": u.Username}).Exec(session); err != nil {
 		return false, err
 	}
 	return true, nil
