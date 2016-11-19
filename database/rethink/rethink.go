@@ -21,7 +21,8 @@ func init() {
 	})
 	if err != nil {
 		log.Fatalln(err.Error())
-	} else {
+	}
+	if err == nil {
 		fmt.Println("Successfully connected to the RethinkDB")
 	}
 }
