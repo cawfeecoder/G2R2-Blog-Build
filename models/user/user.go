@@ -1,4 +1,4 @@
-package user
+package modelUser
 
 //SecurityQuestion model
 type SecurityQuestion struct {
