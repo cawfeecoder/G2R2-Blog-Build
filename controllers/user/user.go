@@ -7,6 +7,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/nfrush/G2R2-Blog-Build/models/user"
 	"github.com/nfrush/G2R2-Blog-Build/services/token"
+	"github.com/nfrush/G2R2-Blog-Build/services/user"
 )
 
 //CreateUser creates a new user
