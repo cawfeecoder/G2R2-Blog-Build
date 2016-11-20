@@ -13,7 +13,7 @@ func init() {
 	var err error
 
 	session, err = r.Connect(r.ConnectOpts{
-		Address:  "localhost:28015",
+		Address:  "localhost:29015",
 		Database: "test",
 		MaxOpen:  40,
 	})

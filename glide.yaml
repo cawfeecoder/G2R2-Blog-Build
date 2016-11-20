@@ -1,0 +1,25 @@
+package: .
+import:
+- package: github.com/dancannon/gorethink
+  version: ^2.2.2
+- package: github.com/dchest/uniuri
+- package: github.com/dgrijalva/jwt-go
+  version: ^3.0.0
+- package: github.com/graphql-go/handler
+- package: github.com/labstack/echo
+  version: v2
+  subpackages:
+  - engine/fasthttp
+  - middleware
+- package: github.com/nfrush/G2R2-Blog-Build
+  subpackages:
+  - controllers/user
+  - database/rethink
+  - models/token
+  - models/user
+  - services/token
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt
+- package: github.com/graphql-go/relay
+- package: github.com/kabukky/httpscerts

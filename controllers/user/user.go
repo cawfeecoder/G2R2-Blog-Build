@@ -5,8 +5,10 @@ import (
 	"regexp"
 
 	"github.com/labstack/echo"
+	"github.com/graphql-go/handler"
 	"github.com/nfrush/G2R2-Blog-Build/models/user"
 	"github.com/nfrush/G2R2-Blog-Build/services/token"
+	"github.com/nfrush/G2R2-Blog-Build/services/user"
 )
 
 //CreateUser creates a new user
@@ -71,3 +73,9 @@ func DeleteUser(c echo.Context) error {
 	}
 	return c.JSON(409, "Error")
 }
+
+//GraphQLUser handles specified GraphQL queries
+func GraphQLUser := handler.New(&handler.Config{
+		Schema: &starwars.Schema,
+		Pretty: true,
+	})
